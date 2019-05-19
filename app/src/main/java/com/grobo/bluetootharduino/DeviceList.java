@@ -2,17 +2,12 @@ package com.grobo.bluetootharduino;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -92,13 +87,9 @@ public class DeviceList extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             String address = ((TextView) view.findViewById(R.id.text2)).getText().toString();
-
             Log.e("bluetooth", address);
 
             PreferenceManager.getDefaultSharedPreferences(DeviceList.this).edit().putString(EXTRA_ADDRESS, address).apply();
-            Intent i = new Intent(DeviceList.this, TerminalActivity.class);
-            i.putExtra(EXTRA_ADDRESS, address);
-            startActivity(i);
             finish();
         }
     };

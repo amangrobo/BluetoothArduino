@@ -1,9 +1,10 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial bluetooth(10, 11); // RX, TX   11: RX of HC05; 10: TX of HC05
+SoftwareSerial bluetooth(10, 11); // RX, TX   pin 11: RX of HC05; pin 10: TX of HC05;
 int LED = 13; // the on-board LED
 char data; // the data received
-String command;
+
+enum Mode {Manual, LF, Encoder} mode;
 
 void setup() {
   bluetooth.begin(9600);
@@ -11,44 +12,59 @@ void setup() {
   Serial.println("Waiting for command...");
   bluetooth.println("Send 'turn on' to turn on the LED. Send 'turn off' to turn Off");
   pinMode(LED, OUTPUT);
+
+  mode = Manual;
 }
 
 void loop() {
+  String command;
   if (bluetooth.available()) { //wait for data received
-
     while (true) {
       data = bluetooth.read();
       if (data == '#') break;
       command = command + data;
-      delay(1);
     }
 
-    if (command == "turn on") {
+    Serial.println(command);
 
-      digitalWrite(LED, 1);
-      Serial.println("LED On !");
-      bluetooth.println("LED On !");
+    if (command == "MN") {
 
-    } else if (command == "turn off") {
+      mode = Manual;
+      Serial.println("Mode Manual !");
+      bluetooth.println("Mode Manual !");
 
-      digitalWrite(LED, 0);
-      Serial.println("LED Off !");
-      bluetooth.println("LED Off ! ");
+    } else if (command == "LF") {
 
-    } else if (command == "hello" || command == "hi") {
+      mode = LF;
+      Serial.println("Mode Line Follower !");
+      bluetooth.println("Mode Line Follower !");
 
-      bluetooth.println("Hi there, this is Arduino !");
+    } else if (command == "EC") {
 
-    }  else if (command == "how are you?" || command == "how are you") {
-
-      bluetooth.println("I'm fine, you can now give commands");
+      mode = Encoder;
+      Serial.println("Mode Encoder !");
+      bluetooth.println("Mode Encoder !");
 
     } else {
-
-      bluetooth.println("Sorry, I don't understand !");
-
+      if (mode == Manual) {
+        checkString(command);
+      }
     }
   }
-  command = "";
   delay(100);
+}
+
+void checkString(String str) {
+
+  String dirn = str.substring(0, 1);
+  int inpPwm = str.substring(2).toInt();
+
+  int pwm = map(inpPwm, 0, 100, 0, 255);
+
+  Serial.print("String:");
+  Serial.println(str);
+  Serial.print("dirn: ");
+  Serial.println(dirn);
+  Serial.print("pwm: ");
+  Serial.println(pwm);
 }

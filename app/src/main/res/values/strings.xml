@@ -5,4 +5,47 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_led_control">ledControl</string>
     <string name="title_activity_about">AboutActivity</string>
+
+    <string-array name="mode_spinner_list">
+        <item>Manual</item>
+        <item>LineFollower</item>
+        <item>Encoder</item>
+    </string-array>
+
+    <string name="about_text">switch (mode) {\n
+                    case Manual:\n
+                        send("MN");\n
+                        break;\n
+                    case LF:\n
+                        send("LF");\n
+                        break;\n
+                    case Encoder:\n
+                        send("EC");\n
+                        break;\n
+                }\n
+        \n
+        private void determineMovement(int angle, int strength) {\n
+        String m = \"\";\n
+        if ((angle >= 0 and angle smaller than or equal to 22) || (angle >= 338 and angle smaller than or equal to 360)) {\n
+            m = "R";\n
+        } else if (angle > 22 and angle smaller than or equal to 67) {\n
+            m = "S";    //FR\n
+        } else if (angle > 67 and angle smaller than 113) {\n
+            m = "F";\n
+        } else if (angle >= 113 and angle smaller than 158) {\n
+            m = "T";    //FL\n
+        } else if (angle >= 158 and angle smaller than or equal to 202) {\n
+            m = "L";\n
+        } else if (angle > 202 and angle smaller than or equal to 247) {\n
+            m = "V";    //BL\n
+        } else if (angle > 247 and angle smaller than 293) {\n
+            m = "B";\n
+        } else if (angle >= 293 and angle smaller than 338) {\n
+            m = "U";    //BR\n
+        }\n
+        send(m + "_" + strength);\n
+    }\n
+
+    </string>
+
 </resources>

@@ -3,15 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        app:showAsAction="ifRoom"
-        android:title="Clear logs"
+        android:id="@+id/action_clear_log"
         android:icon="@drawable/ic_delete_black_24dp"
-        android:id="@+id/action_clear_log"/>
-
-    <item
-        app:showAsAction="ifRoom"
-        android:title="Device list"
-        android:icon="@drawable/ic_devices_white_24dp"
-        android:id="@+id/action_device_list"/>
+        android:title="Clear logs"
+        app:showAsAction="ifRoom" />
 
 </menu>

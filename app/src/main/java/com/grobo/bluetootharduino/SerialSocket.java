@@ -95,7 +95,7 @@ class SerialSocket implements Runnable {
 
                 int len = 0;
 
-                while ((buffer[len] = (byte) socket.getInputStream().read()) != '\n'){
+                while ((buffer[len] = (byte) socket.getInputStream().read()) != '\n') {
                     len++;
                 }
 

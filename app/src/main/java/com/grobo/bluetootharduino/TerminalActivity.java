@@ -16,10 +16,8 @@ import android.speech.tts.TextToSpeech;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
@@ -57,7 +55,6 @@ public class TerminalActivity extends AppCompatActivity implements SerialListene
     private SharedPreferences prefs;
     TextToSpeech tts;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +62,7 @@ public class TerminalActivity extends AppCompatActivity implements SerialListene
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(EXTRA_ADDRESS)) {
-            deviceAddress = getIntent().getExtras().getString(EXTRA_ADDRESS);
-        } else {
-            deviceAddress = prefs.getString(EXTRA_ADDRESS, "");
-
-            if (deviceAddress.equals("")) {
-                goToDeviceList();
-            }
-        }
+        deviceAddress = prefs.getString(EXTRA_ADDRESS, "");
 
         receiveText = findViewById(R.id.receive_text);
         receiveText.setTextColor(Color.parseColor("#4444cc"));
@@ -145,7 +134,6 @@ public class TerminalActivity extends AppCompatActivity implements SerialListene
             initialStart = false;
             connect();
         }
-
 
     }
 
@@ -227,8 +215,7 @@ public class TerminalActivity extends AppCompatActivity implements SerialListene
                     public void onClick(View v) {
                         connect();
                     }
-                })
-                .show();
+                }).show();
     }
 
     @Override
@@ -300,41 +287,28 @@ public class TerminalActivity extends AppCompatActivity implements SerialListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_clear_log:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Clear ?");
-                builder.setMessage("This will clear your logs");
-                builder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        receiveText.setText("");
-                        prefs.edit().putString(EXTRA_LOG, "").apply();
+        if (item.getItemId() == R.id.action_clear_log) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Clear ?");
+            builder.setMessage("This will clear your logs");
+            builder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    receiveText.setText("");
+                    prefs.edit().putString(EXTRA_LOG, "").apply();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    if (dialog != null) {
+                        dialog.dismiss();
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (dialog != null) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                break;
-
-            case R.id.action_device_list:
-                goToDeviceList();
-                break;
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
         return true;
-    }
-
-    private void goToDeviceList() {
-        disconnect();
-        startActivity(new Intent(this, DeviceList.class));
-        finish();
     }
 
     @Override
